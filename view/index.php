@@ -3,17 +3,19 @@
 require_once '../connexion.php';
 
 
-if($_SERVER["REQUEST_METHOD"] === 'GET'){
-    $title = $_GET['task_title'] ?? '';
-    
-    
-if($_GET['btn'] == 'add' ){
 
-    
-    if($title){
-        $insert_query = 
-        "INSERT INTO todo (title)  
-        VALUES (:title) ";
+
+if($_SERVER["REQUEST_METHOD"] === 'GET'){
+    $_GET['btn'] = $_GET['btn'] ?? '';
+
+    if($_GET['btn'] == 'add'){
+
+        $title = $_GET['task_title'] ?? '';
+        
+        
+        
+        if($title){
+            $insert_query = "INSERT INTO todo (title) VALUES (:title) ";
         
         $stmt = $todo->prepare($insert_query);
         
@@ -27,35 +29,34 @@ if($_GET['btn'] == 'add' ){
             echo 'error <br>';
             
             }
-    }elseif ($_GET['btn'] == 'check') {
-                $id = $_GET['id'];
-                $update_query = 
-                "UPDATE todo 
-                SET done = 1 
-                WHERE id = :id";
+        }elseif($_GET['btn'] == '1'){
 
-                $stmt = $todo->prepare($update_query);
-                $stmt->execute([
-                    ':id' => $id
-                ]);
-                echo 'bien checked';
-                }else{
-                    echo 'you have a problem';
-                }
-        
-};
+                    if($_GET['btn']){
+                        echo $_GET['btn'];
+                        }else{
+                            echo 'the number is not-found';
+                            }
+                            
+                            }
+}else{
+                echo 'nothing chosed';
+}
+            
 
 
+//recuperation du table todo apartir du base de donnees 
+    $get_query =  "SELECT * FROM todo";
+    $stmt = $todo->query($get_query);
+    $table_columns = $stmt->fetchAll();
+            
 
 
 
 
-$get_query = 
-"SELECT *
-FROM todo";
 
-$stmt = $todo->query($get_query);
-$table_columns = $stmt->fetchAll();
+
+
+    
 
 
 
@@ -75,7 +76,7 @@ $table_columns = $stmt->fetchAll();
     
 </head>
 <body>
-    <form action="" method="get">
+    <form action="" method="GET">
     <div class="container ">
 
         <div class="d-flex gap-2 mt-3">
@@ -86,11 +87,23 @@ $table_columns = $stmt->fetchAll();
         <?php foreach ($table_columns as $col) : ?> 
         <div class="d-flex   align-items-center gap-3 mt-3 border border-2 p-3 rounded">
 
-            <form action="" method="get">
+            <form action="" method="GET">
+
                 <input type="text" hidden name="id"  value="<?= $col['id']?>">
-                    <button type="checkbox" name="btn" value="check"   <?= $col['done'] == 0 ? '' : 'checked' ?>  class="form-check-input fs-5 "  id=""></button>
-                    <span class="col fs-5 "><?= $col['title']  ?> </span>
-                </form>
+
+                    <button 
+                        type="checkbox" 
+                        name="btn" 
+                        value="<?= $col['done'] ?>" 
+                        <?= $col['done'] == 0 ? '' : 'checked' ?>      
+                        class="form-check-input fs-5 me-3"  
+                        id=""
+                        
+                    >
+
+                    </button>
+                <span class="col fs-5 "><?= $col['title']  ?> </span>
+            </form>
 
         </div>
         <?php endforeach; ?> 
