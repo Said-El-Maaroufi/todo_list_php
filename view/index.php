@@ -5,10 +5,9 @@ require_once '../connexion.php';
 
 
 
-if($_SERVER["REQUEST_METHOD"] === 'GET'){
-    $_GET['btn'] = $_GET['btn'] ?? '';
+if($_SERVER["REQUEST_METHOD"] === 'POST'){
 
-    if($_GET['btn'] == 'add'){
+    if($_POST['btn'] == 'add'){
 
         $title = $_GET['task_title'] ?? '';
         
@@ -29,19 +28,13 @@ if($_SERVER["REQUEST_METHOD"] === 'GET'){
             echo 'error <br>';
             
             }
-        }elseif($_GET['btn'] == '1'){
 
-                    if($_GET['btn']){
-                        echo $_GET['btn'];
-                        }else{
-                            echo 'the number is not-found';
-                            }
-                            
-                            }
+    
+        
 }else{
-                echo 'nothing chosed';
+    echo 'not-found';
 }
-            
+    }           
 
 
 //recuperation du table todo apartir du base de donnees 
@@ -49,6 +42,7 @@ if($_SERVER["REQUEST_METHOD"] === 'GET'){
     $stmt = $todo->query($get_query);
     $table_columns = $stmt->fetchAll();
             
+
 
 
 
@@ -72,42 +66,35 @@ if($_SERVER["REQUEST_METHOD"] === 'GET'){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="">
     <title>My To Do</title>
     
 </head>
 <body>
-    <form action="" method="GET">
     <div class="container ">
-
+        
+        <form action="" method="POST">
         <div class="d-flex gap-2 mt-3">
             <input type="text" class="form-control p-3 fs-5" placeholder="task title....." name="task_title">
             <button class="btn btn-primary" value="add" name="btn" ><i class="bi bi-plus-circle"></i></button>
         </div>
+    </form>
+
 
         <?php foreach ($table_columns as $col) : ?> 
         <div class="d-flex   align-items-center gap-3 mt-3 border border-2 p-3 rounded">
 
-            <form action="" method="GET">
-
-                <input type="text" hidden name="id"  value="<?= $col['id']?>">
-
-                    <button 
-                        type="checkbox" 
-                        name="btn" 
-                        value="<?= $col['done'] ?>" 
-                        <?= $col['done'] == 0 ? '' : 'checked' ?>      
-                        class="form-check-input fs-5 me-3"  
-                        id=""
-                        
-                    >
-
-                    </button>
-                <span class="col fs-5 "><?= $col['title']  ?> </span>
-            </form>
+        <form action="" method="POST">
+                
+                <input type="text" hidden name="id"  value="<?= $col['id']?>"> </input>
+                <button value="check"  name="btn" class="form-check-input me-3" type="button" onclick="checked()"  ></button>
+                <span class="col fs-5  " id="title"><?= $col['title']  ?> </span>
+        </form>
 
         </div>
         <?php endforeach; ?> 
     </div>
-    </form>
+
+    <script src="../javascript/index.js"></script>
 </body>
 </html>
